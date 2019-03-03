@@ -1,11 +1,15 @@
 # OneshotCoverage
 
-This gem is not very useful when you want to use oneshot coverage,
-however, It could be good example to implement it by yourself.
+This gem may not be very useful when you want to use [Coverage onetshot mode](https://bugs.ruby-lang.org/issues/15022),
+however, It could be good example to study how to implement by yourself.
 
-This gem is to provide simple tools to use OneshotCoverage easier. It will log
-files under the target path(usually, project base path).
-In other word, This gem do not log codes under bundler gem path(if exist).
+This gem provides simple tools to use oneshot mode easier. It gives you:
+
+- Rack middleware for logging
+- Pluggable logger interface
+
+Please notice that it records code executions under the target path(usually, project base path).
+If you have bundle gem path under target path, It will be ignored automatically.
 
 ## Installation
 
@@ -61,13 +65,9 @@ end
 
 Please use `OneshotCoverage::Middleware`. This will emit logs per each request.
 
-If you using Rails, below is enough.
+If you using Rails, middleware will be inserted automatically.
 
-```
-require 'oneshot_coverage/railtie'
-```
-
-### With job or batch application
+#### With job/batch application
 
 If your job or batch are exit as soon as it finished(i.e. execute via rails runner),
 then you don't need to do anything. `OneshotCoverage.start` will set trap
