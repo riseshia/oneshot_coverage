@@ -38,7 +38,7 @@ module OneshotCoverage
     def is_target?(filepath, value)
       return false if value[:oneshot_lines].empty?
       return false if !filepath.start_with?(@target_path)
-      return false if @bundle_path && !filepath.start_with?(@bundler_path)
+      return false if @bundler_path && filepath.start_with?(@bundler_path)
       true
     end
 
