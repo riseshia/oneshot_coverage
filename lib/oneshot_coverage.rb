@@ -20,9 +20,11 @@ module OneshotCoverage
   end
 
   class Reporter
-    def initialize(target_path:, logger:)
+    def initialize(target_path:, logger:, max_emit_per_request:)
       @target_path = target_path
       @logger = logger
+      @buffer = []
+      @max_emit_per_request = max_emit_per_request
       if defined?(Bundler)
         @bundler_path = Bundler.bundle_path.to_s
       end
@@ -32,7 +34,9 @@ module OneshotCoverage
       Coverage.result(clear: true, stop: false).
         select { |k, v| is_target?(k, v) }.
         flat_map { |k, v| transform(k, v) }.
-        each { |row| @logger.post(row) }
+        each { |row| @buffer << row }
+
+      @buffer.shift(emit_per_request).each { |row| @logger.post(row) }
     end
 
     def is_target?(filepath, value)
@@ -63,6 +67,10 @@ module OneshotCoverage
     def md5_hash_cache
       @md5_hash_cache ||= {}
     end
+
+    def emit_per_request
+      @max_emit_per_request || @buffer.size
+    end
   end
 
   module_function
@@ -80,7 +88,7 @@ module OneshotCoverage
     @reporter&.emit
   end
 
-  def configure(target_path:, logger: OneshotCoverage::Logger::NullLogger.new)
+  def configure(target_path:, logger: OneshotCoverage::Logger::NullLogger.new, max_emit_per_request: nil)
     target_path_by_pathname =
       if target_path.is_a? Pathname
         target_path
@@ -90,6 +98,7 @@ module OneshotCoverage
     @reporter = OneshotCoverage::Reporter.new(
       target_path: target_path_by_pathname.cleanpath.to_s + "/",
       logger: logger,
+      max_emit_per_request: max_emit_per_request
     )
   end
 end
