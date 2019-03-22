@@ -3,6 +3,7 @@ module OneshotCoverage
     class NullLogger
       def post(_row)
         # Do nothing
+        true
       end
     end
   end

@@ -36,7 +36,12 @@ module OneshotCoverage
         flat_map { |k, v| transform(k, v) }.
         each { |row| @buffer << row }
 
-      @buffer.shift(emit_per_request).each { |row| @logger.post(row) }
+      @buffer.shift(emit_per_request).each do |row|
+        # Retry when fail to post
+        unless @logger.post(row)
+          @buffer << row
+        end
+      end
     end
 
     def is_target?(filepath, value)

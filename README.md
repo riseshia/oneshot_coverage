@@ -35,6 +35,7 @@ Or install it yourself as:
 OneshotCoverage.configure(
   target_path: '/base/project/path',
   logger: OneshotCoverage::Logger::NullLogger.new,
+  max_emit_per_request: nil,
 )
 OneshotCoverage.start
 ```
@@ -58,6 +59,9 @@ class SampleFluentLogger
   end
 end
 ```
+
+Please note that it will retry to send data if `#post` returns falsy value.
+Hence, make sure to return `true` if you don't want to retry.
 
 ### Emit logs
 
