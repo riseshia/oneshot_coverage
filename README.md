@@ -35,7 +35,7 @@ Or install it yourself as:
 OneshotCoverage.configure(
   target_path: '/base/project/path',
   logger: OneshotCoverage::Logger::NullLogger.new,
-  max_emit_per_request: nil,
+  max_emit_at_once: nil, # Flush all when it set to `nil`, which is default
 )
 OneshotCoverage.start
 ```

@@ -20,11 +20,11 @@ module OneshotCoverage
   end
 
   class Reporter
-    def initialize(target_path:, logger:, max_emit_per_request:)
+    def initialize(target_path:, logger:, max_emit_at_once:)
       @target_path = target_path
       @logger = logger
       @buffer = []
-      @max_emit_per_request = max_emit_per_request
+      @max_emit_at_once = max_emit_at_once
       if defined?(Bundler)
         @bundler_path = Bundler.bundle_path.to_s
       end
@@ -36,7 +36,7 @@ module OneshotCoverage
         flat_map { |k, v| transform(k, v) }.
         each { |row| @buffer << row }
 
-      @buffer.shift(emit_per_request).each do |row|
+      @buffer.shift(emit_at_once).each do |row|
         # Retry when fail to post
         unless @logger.post(row)
           @buffer << row
@@ -73,8 +73,8 @@ module OneshotCoverage
       @md5_hash_cache ||= {}
     end
 
-    def emit_per_request
-      @max_emit_per_request || @buffer.size
+    def emit_at_once
+      @max_emit_at_once || @buffer.size
     end
   end
 
@@ -93,7 +93,7 @@ module OneshotCoverage
     @reporter&.emit
   end
 
-  def configure(target_path:, logger: OneshotCoverage::Logger::NullLogger.new, max_emit_per_request: nil)
+  def configure(target_path:, logger: OneshotCoverage::Logger::NullLogger.new, max_emit_at_once: nil)
     target_path_by_pathname =
       if target_path.is_a? Pathname
         target_path
@@ -103,7 +103,7 @@ module OneshotCoverage
     @reporter = OneshotCoverage::Reporter.new(
       target_path: target_path_by_pathname.cleanpath.to_s + "/",
       logger: logger,
-      max_emit_per_request: max_emit_per_request
+      max_emit_at_once: max_emit_at_once
     )
   end
 end
