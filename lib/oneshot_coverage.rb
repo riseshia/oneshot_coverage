@@ -52,7 +52,7 @@ module OneshotCoverage
     end
 
     def transform(filepath, value)
-      rel_path = filepath[@target_path.size..]
+      rel_path = filepath[@target_path.size..-1]
       md5_hash =
         if md5_hash_cache.key?(filepath)
           md5_hash_cache[filepath]
