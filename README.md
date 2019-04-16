@@ -35,7 +35,7 @@ Or install it yourself as:
 OneshotCoverage.configure(
   target_path: '/base/project/path',
   logger: OneshotCoverage::Logger::NullLogger.new,
-  max_emit_at_once: nil, # Flush all when it set to `nil`, which is default
+  emit_term: nil, # emit per `emit_term` seconds. It tries to emit per request when `nil`.
 )
 OneshotCoverage.start
 ```
@@ -44,24 +44,43 @@ As default, OneshotCoverage supports 2 logger.
 
 - OneshotCoverage::Logger::NullLogger (default)
 - OneshotCoverage::Logger::StdoutLogger
+- OneshotCoverage::Logger::FileLogger
 
 Only required interface is `#post` instance method, so you could implement
 by yourself easily.
 
 ```ruby
-class SampleFluentLogger
-  def initialize
-    @logger = Fluent::Logger::FluentLogger.new('tag_prefix')
+class FileLogger
+  def initialize(log_path)
+    @log_path = log_path
   end
 
-  def post(path:, md5_hash:, lineno:)
-    @logger.post(nil, path: path, md5_hash: md5_hash, lineno: lineno)
+  # new_logs: Struct.new(:path, :md5_hash, :lines)
+  def post(new_logs)
+    current_coverage = fetch
+
+    new_logs.each do |new_log|
+      key = "#{new_log.path}-#{new_log.md5_hash}"
+
+      logged_lines = current_coverage.fetch(key, [])
+      current_coverage[key] = logged_lines | new_log.lines
+    end
+    save(current_coverage)
+  end
+
+  private
+
+  def fetch
+    JSON.load(File.read(@log_path))
+  rescue Errno::ENOENT
+    {}
+  end
+
+  def save(data)
+    File.write(@log_path, JSON.dump(data))
   end
 end
 ```
-
-Please note that it will retry to send data if `#post` returns falsy value.
-Hence, make sure to return `true` if you don't want to retry.
 
 ### Emit logs
 

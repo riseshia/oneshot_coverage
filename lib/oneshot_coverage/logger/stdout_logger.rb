@@ -1,11 +1,12 @@
 module OneshotCoverage
   module Logger
     class StdoutLogger
-      def post(path:, md5_hash:, lineno:)
-        $stdout.puts(
-          "[OneshotCoverage] logged path: #{path}, md5_hash: #{md5_hash}, lineno: #{lineno}"
-        )
-        true
+      def post(logs)
+        logs.each do |log|
+          $stdout.puts(
+            "[OneshotCoverage] logged path: #{log.path}, md5_hash: #{log.md5_hash}, executed_lines: #{log.lines}"
+          )
+        end
       end
     end
   end
