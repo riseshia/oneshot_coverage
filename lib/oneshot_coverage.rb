@@ -38,7 +38,7 @@ module OneshotCoverage
     def emit(force_emit)
       if !force_emit
         if !time_to_emit?
-          return true
+          return
         end
       end
 
@@ -49,7 +49,9 @@ module OneshotCoverage
           OneshotLog.new(relative_path(filepath), md5_hash_for(filepath), v[:oneshot_lines])
         end
 
-      @logger.post(logs)
+      if logs.size > 0
+        @logger.post(logs)
+      end
     end
 
     private
