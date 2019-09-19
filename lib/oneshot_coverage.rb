@@ -46,7 +46,7 @@ module OneshotCoverage
         Coverage.result(clear: true, stop: false).
         select { |k, v| is_target?(k, v) }.
         map do |filepath, v|
-          OneshotLog.new(relative_path(filepath), md5_hash_for(filepath), v[:oneshot_lines])
+          OneshotLog.new(relative_path(filepath), md5_hash_for(filepath), v)
         end
 
       if logs.size > 0
@@ -68,7 +68,7 @@ module OneshotCoverage
     end
 
     def is_target?(filepath, value)
-      return false if value[:oneshot_lines].empty?
+      return false if value.empty?
       return false if !filepath.start_with?(@target_path)
       return false if @bundler_path && filepath.start_with?(@bundler_path)
       true
