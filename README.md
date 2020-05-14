@@ -1,6 +1,6 @@
 # OneshotCoverage
 
-This gem may not be very useful when you want to use [Coverage onetshot mode](https://bugs.ruby-lang.org/issues/15022),
+This gem may not be very useful when you want to use [Coverage oneshot mode](https://bugs.ruby-lang.org/issues/15022),
 however, It could be good example to study how to implement by yourself.
 
 This gem provides simple tools to use oneshot mode easier. It gives you:
