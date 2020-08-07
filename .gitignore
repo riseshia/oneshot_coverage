@@ -41,6 +41,7 @@ Temporary Items
 /test/tmp/
 /test/version_tmp/
 /tmp/
+Gemfile.lock
 
 # Used by dotenv library to load environment variables.
 # .env
