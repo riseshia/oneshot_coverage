@@ -36,7 +36,4 @@ Gem::Specification.new do |spec|
 
   # Release ruby version lock temperary
   # spec.required_ruby_version = '>= 2.6'
-
-  spec.add_development_dependency "bundler", "~> 1.17"
-  spec.add_development_dependency "rake", "~> 13.0"
 end
