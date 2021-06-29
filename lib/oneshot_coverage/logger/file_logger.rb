@@ -22,7 +22,7 @@ module OneshotCoverage
       private
 
       def fetch
-        JSON.load(File.read(@log_path))
+        JSON.load(File.read(@log_path)) || {}
       rescue Errno::ENOENT
         {}
       end
