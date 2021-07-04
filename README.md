@@ -9,7 +9,7 @@ This gem provides simple tools to use oneshot mode easier. It gives you:
 - Pluggable logger interface
 
 Please notice that it records code executions under the target path(usually, project base path).
-If you have bundle gem path under target path, It will be ignored automatically.
+If you have bundle gem path under target path, It will be ignored by default.
 
 ## Installation
 
@@ -36,6 +36,7 @@ OneshotCoverage.configure(
   target_path: '/base/project/path',
   logger: OneshotCoverage::Logger::NullLogger.new,
   emit_term: nil, # emit per `emit_term` seconds. It tries to emit per request when `nil`.
+  cover_bundle_path: false, # record bundle gem path. Default value is false.
 )
 OneshotCoverage.start
 ```
