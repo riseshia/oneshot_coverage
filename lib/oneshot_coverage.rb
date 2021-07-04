@@ -22,7 +22,7 @@ module OneshotCoverage
   OneshotLog = Struct.new(:path, :md5_hash, :lines)
 
   class Reporter
-    def initialize(target_path:, logger:, emit_term: nil, check_bundle_path: false)
+    def initialize(target_path:, logger:, emit_term: nil, cover_bundle_path: false)
       @target_path = target_path
       @logger = logger
       @emit_term = emit_term
@@ -32,7 +32,7 @@ module OneshotCoverage
 
       if defined?(Bundler)
         @bundler_path = Bundler.bundle_path.to_s
-        @check_bundle_path = check_bundle_path
+        @cover_bundle_path = cover_bundle_path
       end
     end
 
@@ -70,7 +70,7 @@ module OneshotCoverage
 
     def is_target?(filepath, value)
       return false if value[:oneshot_lines].empty?
-      return @check_bundle_path if @bundler_path && filepath.start_with?(@bundler_path)
+      return @cover_bundle_path if @bundler_path && filepath.start_with?(@bundler_path)
       return false if !filepath.start_with?(@target_path)
       true
     end
@@ -111,12 +111,12 @@ module OneshotCoverage
     @reporter&.emit(force_emit)
   end
 
-  def configure(target_path:, logger: OneshotCoverage::Logger::NullLogger.new, emit_term: nil, check_bundle_path: false)
+  def configure(target_path:, logger: OneshotCoverage::Logger::NullLogger.new, emit_term: nil, cover_bundle_path: false)
     @reporter = OneshotCoverage::Reporter.new(
       target_path: Pathname.new(target_path).cleanpath.to_s + "/",
       logger: logger,
       emit_term: emit_term,
-      check_bundle_path: check_bundle_path
+      cover_bundle_path: cover_bundle_path
     )
   end
 end
