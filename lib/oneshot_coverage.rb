@@ -30,11 +30,10 @@ module OneshotCoverage
         @next_emit_time = Time.now.to_i + rand(@emit_term)
       end
 
-
       if defined?(Bundler)
         @bundler_path = Bundler.bundle_path.to_s
+        @check_bundle_path = check_bundle_path
       end
-      @check_bundle_path = check_bundle_path
     end
 
     def emit(force_emit)
