@@ -22,7 +22,7 @@ module OneshotCoverage
   OneshotLog = Struct.new(:path, :md5_hash, :lines)
 
   class Reporter
-    def initialize(target_path:, logger:, emit_term: nil, check_bundle_path:)
+    def initialize(target_path:, logger:, emit_term: nil, check_bundle_path: false)
       @target_path = target_path
       @logger = logger
       @emit_term = emit_term
