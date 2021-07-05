@@ -99,6 +99,11 @@ to emit via `at_exit`.
 On the other hand, it's not, then you need to emit it manually
 at proper timing(i.e. when batch finished)
 
+### Note
+
+Note that `cover_bundle_path` only cover managed gem by bundler.
+In the other words, the gem installed with `path` option, which bundler just load it, will not be included by this.
+
 ## License
 
 The gem is available as open source under the terms of the [MIT License](https://opensource.org/licenses/MIT).

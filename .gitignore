@@ -94,3 +94,5 @@ build-iPhoneSimulator/
 /pkg/
 /spec/reports/
 /tmp/
+
+target_app/coverage.json
