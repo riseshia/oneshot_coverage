@@ -22,7 +22,14 @@ module OneshotCoverage
   OneshotLog = Struct.new(:path, :md5_hash, :lines)
 
   class Reporter
-    def initialize(target_path:, logger:, emit_term: nil, cover_bundle_path: false)
+    def initialize(
+      coverage_module:,
+      target_path:,
+      logger:,
+      emit_term: nil,
+      cover_bundle_path: false
+    )
+      @coverage_module = coverage_module
       @target_path = target_path
       @logger = logger
       @emit_term = emit_term
@@ -44,10 +51,11 @@ module OneshotCoverage
       end
 
       logs =
-        Coverage.result(clear: true, stop: false).
+        @coverage_module.result(clear: true, stop: false).
         select { |k, v| is_target?(k, v) }.
         map do |filepath, v|
-          OneshotLog.new(relative_path(filepath), md5_hash_for(filepath), v[:oneshot_lines])
+          formatted_path = format_filepath(filepath)
+          OneshotLog.new(format_filepath(filepath), md5_hash_for(filepath), v[:oneshot_lines])
         end
 
       if logs.size > 0
@@ -70,9 +78,21 @@ module OneshotCoverage
 
     def is_target?(filepath, value)
       return false if value[:oneshot_lines].empty?
-      return @cover_bundle_path if @bundler_path && filepath.start_with?(@bundler_path)
+      return @cover_bundle_path if from_bundler?(filepath)
       return false if !filepath.start_with?(@target_path)
       true
+    end
+
+    def from_bundler?(filepath)
+      @bundler_path && filepath.start_with?(@bundler_path)
+    end
+
+    def format_filepath(filepath)
+      if from_bundler?(filepath)
+        filepath
+      else
+        relative_path(filepath)
+      end
     end
 
     def relative_path(filepath)
@@ -111,8 +131,15 @@ module OneshotCoverage
     @reporter&.emit(force_emit)
   end
 
-  def configure(target_path:, logger: OneshotCoverage::Logger::NullLogger.new, emit_term: nil, cover_bundle_path: false)
+  def configure(
+    target_path:,
+    logger: OneshotCoverage::Logger::NullLogger.new,
+    coverage_module: Coverage,
+    emit_term: nil,
+    cover_bundle_path: false
+  )
     @reporter = OneshotCoverage::Reporter.new(
+      coverage_module: coverage_module,
       target_path: Pathname.new(target_path).cleanpath.to_s + "/",
       logger: logger,
       emit_term: emit_term,
