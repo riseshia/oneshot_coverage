@@ -69,7 +69,7 @@ module OneshotCoverage
     def fill_lines(coverages)
       oneshot_coverage_logs.each do |filepath, linenums|
         linenums.each do |linenum|
-          coverages[filepath][linenum - 1] = 1
+          coverages[filepath][linenum - 1] = 1 unless coverages[filepath].nil?
         end
       end
     end
