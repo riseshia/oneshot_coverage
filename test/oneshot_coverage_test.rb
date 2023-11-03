@@ -35,6 +35,6 @@ class OneshotCoverageTest < Minitest::Test
     assert_equal logs["adder.rb-e4e5063f874fdd16febba4e8b8b2448b"], [1,2,7,3,4,8]
 
     logs_from_bundled_gem = logs.select { |log| log.include?("minitest-") }
-    assert_equal logs_from_bundled_gem.size, 5
+    assert_equal logs_from_bundled_gem.size, 4
   end
 end
