@@ -54,7 +54,6 @@ module OneshotCoverage
         @coverage_module.result(clear: true, stop: false).
         select { |k, v| is_target?(k, v) }.
         map do |filepath, v|
-          formatted_path = format_filepath(filepath)
           OneshotLog.new(format_filepath(filepath), md5_hash_for(filepath), v[:oneshot_lines])
         end
 
