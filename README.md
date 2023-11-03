@@ -114,7 +114,7 @@ OneshotCoverage::SimplecovReporter.new(
 ).run
 ```
 
-This code generates html report under 'project_path/`coverage/`'
+This code generates html report under `<project_path>/coverage/`
 
 ### Note
 
